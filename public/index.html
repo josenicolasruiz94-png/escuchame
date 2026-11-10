@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0f1f2e">
+  <meta name="description" content="Hablá y escuchá: llamadas de apoyo anónimas entre personas.">
+  <title>Escúchame</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main id="app">
+
+    <!-- Bienvenida / reglas -->
+    <section id="s-welcome" class="screen hidden">
+      <div class="logo" aria-hidden="true">🫂</div>
+      <h1>Escúchame</h1>
+      <p class="lead">Un espacio para desahogarte y para escuchar. Te conectamos por voz con otra persona que también quiere hablar y apoyar.</p>
+      <ul class="rules">
+        <li>Es apoyo entre personas, <b>no reemplaza a un profesional</b>.</li>
+        <li>Sos anónimo: solo usás un alias. No se graba el audio.</li>
+        <li>Escuchá con respeto. Ante cualquier falta de respeto: bloqueá o reportá.</li>
+        <li>Si estás en peligro o pensás en hacerte daño, pedí ayuda urgente a emergencias o a una línea de crisis de tu país.</li>
+      </ul>
+      <label class="check"><input type="checkbox" id="age"> Tengo 18 años o más</label>
+      <label class="check"><input type="checkbox" id="accept"> Acepto las reglas, los <a href="legal.html" target="_blank" rel="noopener">términos y la privacidad</a></label>
+      <button id="btn-welcome" class="primary" disabled>Empezar</button>
+    </section>
+
+    <!-- Perfil / ajustes -->
+    <section id="s-setup" class="screen hidden">
+      <div class="top"><h2 id="setup-title">Tu perfil</h2><button id="btn-back" class="ghost hidden">✕</button></div>
+      <label>Alias
+        <input id="alias" maxlength="24" placeholder="Ej: Luna, Nico, Viajero…" autocomplete="off">
+      </label>
+      <h3>Idiomas en los que podés hablar</h3>
+      <div id="langs" class="chips" role="group" aria-label="Idiomas"></div>
+      <h3>¿En qué horario querés recibir llamadas?</h3>
+      <p class="hint">Solo te van a llamar dentro de esta franja. Tu zona horaria: <b id="tz-label"></b></p>
+      <div class="row">
+        <label>Desde <input type="time" id="t-start" value="20:00"></label>
+        <label>Hasta <input type="time" id="t-end" value="23:00"></label>
+      </div>
+      <label class="check"><input type="checkbox" id="allday"> Cualquier hora del día</label>
+      <button id="btn-save" class="primary">Guardar</button>
+
+      <div id="settings-extra" class="hidden">
+        <h3>Notificaciones</h3>
+        <label class="switch-row">
+          <span>Avisarme cuando alguien quiera hablar<br><small id="push-note">Te llega un aviso aunque tengas la app cerrada, solo dentro de tu horario.</small></span>
+          <input type="checkbox" id="push-toggle" class="switch">
+        </label>
+        <h3>Personas bloqueadas</h3>
+        <div class="row-between"><span id="blocked-info" class="hint">Ninguna</span><button id="btn-unblock" class="ghost">Desbloquear a todas</button></div>
+        <h3>Tu privacidad</h3>
+        <p class="hint">Guardamos tu alias, horario, idiomas, bloqueos y (si las activás) tus notificaciones. Nunca el audio.</p>
+        <button id="btn-install-2" class="ghost wide hidden">📲 Instalar la app</button>
+        <p id="ios-hint" class="note hidden">En iPhone: tocá Compartir y luego "Añadir a pantalla de inicio". Así podés activar las notificaciones.</p>
+        <button id="btn-delete" class="danger-ghost wide">🗑️ Borrar mis datos</button>
+      </div>
+    </section>
+
+    <!-- Inicio -->
+    <section id="s-home" class="screen hidden">
+      <header class="top">
+        <span id="who">—</span>
+        <button id="btn-settings" class="ghost" aria-label="Ajustes">⚙️</button>
+      </header>
+      <div class="status"><span id="dot" class="dot off"></span><span id="conn">Conectando…</span></div>
+      <div class="center">
+        <button id="btn-call" class="call" disabled aria-label="Llamar">
+          <span class="ico" aria-hidden="true">📞</span>
+          <span>Llamar</span>
+        </button>
+        <p id="avail-count" class="hint" aria-live="polite">—</p>
+      </div>
+      <button id="push-banner" class="note linkish hidden">🔔 Activá las notificaciones para que puedan llamarte aunque tengas la app cerrada</button>
+      <label class="switch-row">
+        <span>Recibir llamadas<br><small id="window-label"></small></span>
+        <input type="checkbox" id="receive" class="switch">
+      </label>
+      <p id="outside-note" class="note hidden">Ahora estás fuera de tu horario: podés llamar, pero no te van a llamar.</p>
+      <details class="tips">
+        <summary>💡 Cómo escuchar bien</summary>
+        <ul>
+          <li>Dejá que la otra persona hable sin interrumpir.</li>
+          <li>No des órdenes ni juzgues: preguntá "¿cómo te sentís con eso?".</li>
+          <li>No hace falta resolver nada: estar presente ya ayuda.</li>
+          <li>Podés cortar si te sentís incómodo/a.</li>
+        </ul>
+      </details>
+      <button id="btn-install" class="ghost hidden">📲 Instalar la app</button>
+      <button id="btn-help" class="ghost wide">🆘 Necesito ayuda urgente</button>
+    </section>
+
+    <!-- Buscando -->
+    <section id="s-searching" class="screen hidden center-col">
+      <div class="pulse"></div>
+      <h2>Buscando a alguien que te escuche…</h2>
+      <p id="search-msg" class="hint" aria-live="polite">Puede tardar unos segundos.</p>
+      <button id="btn-cancel" class="danger">Cancelar</button>
+    </section>
+
+    <!-- Llamada entrante -->
+    <section id="s-incoming" class="screen hidden center-col">
+      <div class="pulse green"></div>
+      <h2><span id="in-alias">Alguien</span> quiere hablar</h2>
+      <p class="hint">Una persona necesita ser escuchada. ¿Podés acompañarla?</p>
+      <div class="row">
+        <button id="btn-decline" class="danger">Ahora no</button>
+        <button id="btn-accept" class="primary">Atender</button>
+      </div>
+    </section>
+
+    <!-- En llamada -->
+    <section id="s-call" class="screen hidden center-col">
+      <p id="net-banner" class="note hidden" role="status"></p>
+      <div class="avatar" id="peer-initial">?</div>
+      <h2 id="peer-alias">—</h2>
+      <p id="call-state" class="hint">Conectando…</p>
+      <p id="shared-langs" class="hint small"></p>
+      <p id="timer" class="timer" aria-live="off">00:00</p>
+      <div class="row">
+        <button id="btn-mute" class="round" aria-label="Silenciar micrófono">🎤</button>
+        <button id="btn-hang" class="round red" aria-label="Cortar">📵</button>
+        <button id="btn-flag" class="round" aria-label="Bloquear o reportar">🚩</button>
+      </div>
+      <p class="hint small">Escuchá sin juzgar. Si algo no está bien, usá 🚩.</p>
+      <audio id="remote" autoplay playsinline></audio>
+    </section>
+
+    <!-- Fin -->
+    <section id="s-end" class="screen hidden center-col">
+      <div class="logo" aria-hidden="true">💙</div>
+      <h2 id="end-title">Llamada terminada</h2>
+      <p id="end-text" class="lead">Gracias por animarte a hablar y a escuchar.</p>
+      <button id="btn-home" class="primary">Volver al inicio</button>
+      <button id="btn-end-flag" class="ghost hidden">🚩 Bloquear o reportar a esta persona</button>
+    </section>
+
+    <!-- Suspendido -->
+    <section id="s-banned" class="screen hidden center-col">
+      <div class="logo" aria-hidden="true">⛔</div>
+      <h2>Acceso suspendido</h2>
+      <p class="lead">Recibimos varios reportes sobre este dispositivo y por ahora no podés usar las llamadas. Si creés que es un error, escribile a quien administra la app.</p>
+    </section>
+  </main>
+
+  <!-- Modal reportar -->
+  <div id="modal-flag" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="flag-title">
+    <div class="card">
+      <h3 id="flag-title">¿Qué pasó?</h3>
+      <select id="flag-reason" aria-label="Motivo">
+        <option value="">Solo bloquear a esta persona</option>
+        <option value="falta_de_respeto">Falta de respeto / insultos</option>
+        <option value="acoso">Acoso o contenido sexual</option>
+        <option value="spam">Publicidad o estafa</option>
+        <option value="menor">Parece menor de edad</option>
+        <option value="otro">Otro</option>
+      </select>
+      <p class="hint small">No volverán a emparejarte con esta persona.</p>
+      <div class="row">
+        <button id="flag-cancel" class="ghost">Volver</button>
+        <button id="flag-ok" class="danger">Bloquear</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal ayuda -->
+  <div id="modal-help" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="help-title">
+    <div class="card">
+      <h3 id="help-title">Si necesitás ayuda urgente</h3>
+      <p>Si estás en peligro o pensando en hacerte daño, <b>llamá ahora a emergencias de tu país</b> o a una línea de crisis. Esta app no es un servicio de emergencia.</p>
+      <p>Encontrá líneas gratuitas por país en <a href="https://findahelpline.com" target="_blank" rel="noopener">findahelpline.com</a>.</p>
+      <p>También podés hablar con alguien de confianza ahora mismo.</p>
+      <button id="help-close" class="primary">Cerrar</button>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden" role="status"></div>
+  <script src="app.js"></script>
+</body>
+</html>

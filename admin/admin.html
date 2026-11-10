@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Escúchame · Moderación</title>
+<style>
+body{font-family:system-ui,sans-serif;background:#0f1f2e;color:#eaf2f8;margin:0;padding:16px;max-width:760px;margin:auto}
+input,button{font:inherit;padding:10px;border-radius:10px;border:1px solid #2b4259;background:#16293b;color:#eaf2f8}
+button{cursor:pointer;background:#4fd1c5;color:#06302c;border:0;font-weight:700}
+button.warn{background:#e5586b;color:#fff}
+.card{background:#16293b;border-radius:14px;padding:14px;margin:12px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}
+.grid div{background:#0f1f2e;border-radius:10px;padding:10px}.grid b{display:block;font-size:1.4rem}
+code{font-size:.78rem;word-break:break-all}
+.row{display:flex;gap:8px;align-items:center;justify-content:space-between;margin:6px 0;flex-wrap:wrap}
+small{color:#9bb0c2}
+</style></head><body>
+<h2>Moderación</h2>
+<div class="card" id="login"><input id="key" type="password" placeholder="Clave de administrador"> <button id="go">Entrar</button></div>
+<div id="app" hidden>
+  <div class="card"><div class="grid" id="stats"></div></div>
+  <div class="card"><h3>Personas suspendidas</h3><div id="banned"></div></div>
+  <div class="card"><h3>Últimos reportes</h3><div id="reports"></div>
+    <small>Se suspende solo a quien reciben reportes de 3 personas distintas en 7 días. Podés suspender o reactivar a mano con el ID.</small></div>
+  <div class="card"><h3>Claves de notificaciones</h3>
+    <small>Generalas una sola vez, copialas en Render (Environment) y no las cambies después.</small><br><br>
+    <button id="vapid">Generar claves</button><pre id="vapid-out" style="white-space:pre-wrap;word-break:break-all;font-size:.8rem"></pre></div>
+  <div class="card"><input id="manual" placeholder="ID de dispositivo" size="30"> <button id="ban" class="warn">Suspender</button> <button id="unban">Reactivar</button></div>
+</div>
+<script src="/admin/admin.js"></script>
+</body></html>

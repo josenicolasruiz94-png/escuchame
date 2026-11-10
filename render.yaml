@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: escuchame
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /healthz
+    envVars:
+      - key: ADMIN_KEY          # clave para entrar a /admin (inventá una larga)
+        sync: false
+      - key: DATABASE_URL       # base Postgres gratis (Neon, Supabase...)
+        sync: false
+      - key: CF_TURN_KEY_ID     # TURN de Cloudflare
+        sync: false
+      - key: CF_TURN_API_TOKEN
+        sync: false
+      - key: VAPID_PUBLIC_KEY   # notificaciones push
+        sync: false
+      - key: VAPID_PRIVATE_KEY
+        sync: false
+      - key: VAPID_SUBJECT
+        sync: false

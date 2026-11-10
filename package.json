@@ -1,0 +1,21 @@
+{
+  "name": "escuchame",
+  "version": "2.0.0",
+  "description": "Llamadas de apoyo y escucha entre personas, emparejadas por horario",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test/flow.test.js && node test/ice.test.js",
+    "test:pg": "node test/pg.test.js",
+    "keys": "node scripts/gen-vapid.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "pg": "^8.23.1",
+    "web-push": "^3.6.7",
+    "ws": "^8.18.0"
+  }
+}
