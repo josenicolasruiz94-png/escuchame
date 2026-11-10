@@ -55,17 +55,26 @@
 
   function refreshHome() {
     $('who').textContent = profile ? profile.alias : '';
+    renderStatus();
     $('receive').checked = !!profile.enabled;
-    $('window-label').textContent = profile.start === profile.end ? 'Cualquier hora' : 'De ' + toHHMM(profile.start) + ' a ' + toHHMM(profile.end);
+    const win = profile.start === profile.end ? 'Cualquier hora' : 'De ' + toHHMM(profile.start) + ' a ' + toHHMM(profile.end);
+    $('window-label').textContent = profile.enabled ? '🟢 Activado · ' + win : '⚪ Desactivado · nadie te va a poder llamar';
+    $('off-note').classList.toggle('hidden', !!profile.enabled);
     $('outside-note').classList.toggle('hidden', !(profile.enabled && !nowInWindow()));
     $('btn-call').disabled = !wsReady;
     $('push-banner').classList.toggle('hidden', !(pushCfg && !LS.get('push', false) && !LS.get('pushBannerOff', false) && 'PushManager' in window && (!isIOS || isStandalone)));
     $('btn-install').classList.toggle('hidden', !deferredInstall || isStandalone);
   }
   function homeVisible() { return !$('s-home').classList.contains('hidden'); }
+  let connOk = false;
+  function renderStatus() {
+    const off = connOk && profile && !profile.enabled;
+    $('dot').classList.toggle('off', !connOk || off);
+    $('conn').textContent = !connOk ? 'Reconectando…' : off ? 'Desconectado · no recibís llamadas' : 'Conectado';
+  }
   function setConn(ok) {
-    $('dot').classList.toggle('off', !ok);
-    $('conn').textContent = ok ? 'Conectado' : 'Reconectando…';
+    connOk = ok;
+    renderStatus();
     if (profile && homeVisible()) refreshHome();
   }
 
